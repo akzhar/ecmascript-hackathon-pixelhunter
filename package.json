@@ -2,7 +2,7 @@
   "name": "PixelHunter",
   "version": "5.0.0",
   "private": true,
-  "description": "Личный проект «{{projectTitle}}» от HTML Academy",
+  "description": "Личный проект «PixelHunter» от HTML Academy",
   "scripts": {
     "eslint": "eslint ./gulpfile.js js/",
     "stylelint": "stylelint 'sass/**/*.scss' --syntax scss",
