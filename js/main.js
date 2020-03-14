@@ -1,74 +1,92 @@
-'use strict';
+import switchScreen from './screen.js';
 
-const body = document.querySelector(`body`);
-const main = document.querySelector(`#main`);
-const screens = Array.from(document.querySelectorAll(`template`)).map((template) => template.content.querySelector(`section`));
-const arrowsContent = `
-  <style>
-    .arrows__wrap {
-      position: absolute;
-      top: 95px;
-      left: 50%;
-      margin-left: -56px;
-    }
-    .arrows__btn {
-      background: none;
-      border: 2px solid black;
-      padding: 5px 20px;
-    }
-  </style>
-  <button id="arrow-left" class="arrows__btn"><-</button>
-  <button id="arrow-right" class="arrows__btn">-></button>`;
+import introElement from './intro.js';
+import greetingElement from './greeting.js';
+import rulesElement from './rules.js';
+import game1Element from './game-1.js';
+import game2Element from './game-2.js';
+import game3Element from './game-3.js';
+import statsElement from './stats.js';
 
-let screenNo = 0;
+start();
 
-function changeScreen() {
-  let lastNo = screens.length - 1;
-  if (screenNo < 0) {
-    screenNo = lastNo;
-  }
-  if (screenNo > lastNo) {
-    screenNo = 0;
-  }
+// обнулить все экраны
 
-  let screen = screens[screenNo];
-  main.innerHTML = ``;
-  main.appendChild(screen);
+function start() {
+  const introAsterisk = document.querySelector(`.intro__asterisk`);
+  introAsterisk.addEventListener(`click`, onIntroAsteriskClick);
 }
 
-function nextScreen() {
-  screenNo++;
-  changeScreen();
+function onIntroAsteriskClick() {
+  switchScreen(greetingElement);
+  const greetingArrow = document.querySelector(`.greeting__continue`);
+  greetingArrow.addEventListener(`click`, onGreetingArrowClick);
 }
 
-function previousScreen() {
-  screenNo--;
-  changeScreen();
+function onGreetingArrowClick() {
+  switchScreen(rulesElement);
+  switchOnBackBtn();
+  const rulesInput = document.querySelector(`.rules__input`);
+  const rulesBtn = document.querySelector(`.rules__button`);
+  rulesBtn.disabled = true;
+  rulesInput.addEventListener(`input`, () => {
+    rulesBtn.disabled = (rulesInput.value === ``) ? true : false;
+  });
+  rulesBtn.addEventListener(`click`, onRulesBtnClick);
 }
 
-function addArrows() {
-  const arrows = document.createElement(`div`);
-  arrows.classList.add(`arrows__wrap`);
-  arrows.innerHTML = arrowsContent;
-  body.appendChild(arrows);
+function onBackBtnClick() {
+  switchScreen(introElement);
+  start();
 }
 
-document.addEventListener(`keydown`, function (evt) {
-  if (evt.keyCode === 37) {
-    previousScreen();
-  }
-  if (evt.keyCode === 39) {
-    nextScreen();
-  }
-});
+function switchOnBackBtn() {
+  const backBtn = document.querySelector(`.back`);
+  backBtn.addEventListener(`click`, onBackBtnClick);
+}
 
-addArrows();
+function onRulesBtnClick() {
+  switchScreen(game1Element);
+  switchOnBackBtn();
+  const questionAnswers = document.querySelectorAll(`.game__answer`);
+  const question1Answers = Array.from(document.querySelectorAll(`input[name="question1"]`));
+  const question2Answers = Array.from(document.querySelectorAll(`input[name="question2"]`));
+  let canContinue = false;
+  questionAnswers.forEach((answer) => {
+    answer.addEventListener(`click`, () => {
+      canContinue = isAllAnswered(question1Answers, question2Answers);
+      if (canContinue) {
+        onGame1AnswersChecked();
+      }
+    });
+  });
+}
 
-const arrowLeft = document.querySelector(`#arrow-left`);
-const arrowRight = document.querySelector(`#arrow-right`);
+function isAllAnswered(...answers) {
+  const checked = (arr) => arr.some((element) => element.checked);
+  return answers.every(checked);
+}
 
-arrowLeft.addEventListener(`click`, previousScreen);
-arrowRight.addEventListener(`click`, nextScreen);
+function onGame1AnswersChecked() {
+  switchScreen(game2Element);
+  switchOnBackBtn();
+  const questionAnswers = document.querySelectorAll(`.game__answer`);
+  questionAnswers.forEach((answer) => {
+    answer.addEventListener(`click`, onGame2AnswersChecked);
+  });
+}
 
-changeScreen();
+function onGame2AnswersChecked() {
+  switchScreen(game3Element);
+  switchOnBackBtn();
+  const questionAnswers = document.querySelectorAll(`.game__option`);
+  questionAnswers.forEach((answer) => {
+    answer.addEventListener(`click`, onGame3AnswersChecked);
+  });
+}
+
+function onGame3AnswersChecked() {
+  switchScreen(statsElement);
+  switchOnBackBtn();
+}
 
