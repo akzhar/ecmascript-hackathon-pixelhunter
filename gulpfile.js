@@ -7,11 +7,12 @@ const plumber = require(`gulp-plumber`);
 const postcss = require(`gulp-postcss`);
 const autoprefixer = require(`autoprefixer`);
 const server = require(`browser-sync`).create();
-const mqpacker = require(`css-mqpacker`);
 const minify = require(`gulp-csso`);
 const rename = require(`gulp-rename`);
 const imagemin = require(`gulp-imagemin`);
 const svgstore = require(`gulp-svgstore`);
+const rollup = require(`gulp-better-rollup`);
+const sourcemaps = require(`gulp-sourcemaps`);
 
 gulp.task(`style`, () => {
   return gulp.src(`sass/style.scss`).
@@ -26,8 +27,7 @@ gulp.task(`style`, () => {
           `last 2 Opera versions`,
           `last 2 Edge versions`
         ]
-      }),
-      mqpacker({sort: true})
+      })
     ])).
     pipe(gulp.dest(`build/css`)).
     pipe(server.stream()).
@@ -48,10 +48,13 @@ gulp.task(`sprite`, () => {
 gulp.task(`scripts`, () => {
   return gulp.src(`js/**/*.js`).
     pipe(plumber()).
+    pipe(sourcemaps.init()).
+    pipe(rollup({}, `iife`)).
+    pipe(sourcemaps.write(``)).
     pipe(gulp.dest(`build/js/`));
 });
 
-gulp.task(`imagemin`, [`copy`], () => {
+gulp.task(`imagemin`, () => {
   return gulp.src(`build/img/**/*.{jpg,png,gif}`).
     pipe(imagemin([
       imagemin.optipng({optimizationLevel: 3}),
@@ -66,7 +69,7 @@ gulp.task(`copy-html`, () => {
     pipe(server.stream());
 });
 
-gulp.task(`copy`, [`copy-html`, `scripts`, `style`, `sprite`], () => {
+gulp.task(`copy`, () => {
   return gulp.src([
     `fonts/**/*.{woff,woff2}`,
     `img/*.*`
@@ -78,12 +81,12 @@ gulp.task(`clean`, () => {
   return del(`build`);
 });
 
-gulp.task(`js-watch`, [`scripts`], (done) => {
+gulp.task(`reload`, (done) => {
   server.reload();
   done();
 });
 
-gulp.task(`serve`, [`assemble`], () => {
+gulp.task(`serve`, () => {
   server.init({
     server: `./build`,
     notify: false,
@@ -92,22 +95,18 @@ gulp.task(`serve`, [`assemble`], () => {
     ui: false
   });
 
-  gulp.watch(`sass/**/*.{scss,sass}`, [`style`]);
+  gulp.watch(`sass/**/*.{scss,sass}`, gulp.series(`style`, `reload`));
   gulp.watch(`*.html`).on(`change`, (e) => {
     if (e.type !== `deleted`) {
-      gulp.start(`copy-html`);
+      gulp.series(`copy-html`);
     }
   });
-  gulp.watch(`js/**/*.js`, [`js-watch`]);
+  gulp.watch(`js/**/*.js`, gulp.series(`scripts`, `reload`));
 });
 
-gulp.task(`assemble`, [`clean`], () => {
-  gulp.start(`copy`, `style`);
-});
+gulp.task(`assemble`, gulp.series(`clean`, `copy`, `copy-html`, `style`, `sprite`, `imagemin`, `scripts`));
 
-gulp.task(`build`, [`assemble`], () => {
-  gulp.start(`imagemin`);
-});
+gulp.task(`build`, gulp.series(`assemble`, `serve`));
 
 gulp.task(`test`, () => {
 });
