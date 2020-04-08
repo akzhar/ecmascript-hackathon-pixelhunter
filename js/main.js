@@ -28,6 +28,7 @@ function onGreetingArrowClick() {
   switchOnBackBtn();
   const rulesInput = document.querySelector(`.rules__input`);
   const rulesBtn = document.querySelector(`.rules__button`);
+  rulesInput.value = ``;
   rulesBtn.disabled = true;
   rulesInput.addEventListener(`input`, () => {
     rulesBtn.disabled = (rulesInput.value === ``) ? true : false;
