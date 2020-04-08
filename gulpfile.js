@@ -1,5 +1,3 @@
-'use strict';
-
 const del = require(`del`);
 const gulp = require(`gulp`);
 const sass = require(`gulp-sass`);
@@ -13,36 +11,51 @@ const imagemin = require(`gulp-imagemin`);
 const svgstore = require(`gulp-svgstore`);
 const rollup = require(`gulp-better-rollup`);
 const sourcemaps = require(`gulp-sourcemaps`);
+const mocha = require(`gulp-mocha`);
+const commonjs = require(`rollup-plugin-commonjs`);
+
+gulp.task(`test`, function () {
+  return gulp
+  .src([`js/**/*.test.js`])
+    .pipe(rollup({
+      plugins: [
+        commonjs() // Сообщает Rollup, что модули можно загружать из node_modules
+      ]}, `cjs`)) // Выходной формат тестов — `CommonJS` модуль
+  .pipe(gulp.dest(`build/test`))
+  .pipe(mocha({
+    reporter: `spec` // Вид в котором я хочу отображать результаты тестирования
+  }));
+});
 
 gulp.task(`style`, () => {
   return gulp.src(`sass/style.scss`).
-    pipe(plumber()).
-    pipe(sass()).
-    pipe(postcss([
-      autoprefixer({
-        browsers: [
-          `last 1 version`,
-          `last 2 Chrome versions`,
-          `last 2 Firefox versions`,
-          `last 2 Opera versions`,
-          `last 2 Edge versions`
-        ]
-      })
-    ])).
-    pipe(gulp.dest(`build/css`)).
-    pipe(server.stream()).
-    pipe(minify()).
-    pipe(rename(`style.min.css`)).
-    pipe(gulp.dest(`build/css`));
+  pipe(plumber()).
+  pipe(sass()).
+  pipe(postcss([
+    autoprefixer({
+      browsers: [
+        `last 1 version`,
+        `last 2 Chrome versions`,
+        `last 2 Firefox versions`,
+        `last 2 Opera versions`,
+        `last 2 Edge versions`
+      ]
+    })
+  ])).
+  pipe(gulp.dest(`build/css`)).
+  pipe(server.stream()).
+  pipe(minify()).
+  pipe(rename(`style.min.css`)).
+  pipe(gulp.dest(`build/css`));
 });
 
 gulp.task(`sprite`, () => {
-  return gulp.src(`img/sprite/*.svg`)
-  .pipe(svgstore({
+  return gulp.src(`img/sprite/*.svg`).
+  pipe(svgstore({
     inlineSvg: true
-  }))
-  .pipe(rename(`sprite.svg`))
-  .pipe(gulp.dest(`build/img`));
+  })).
+  pipe(rename(`sprite.svg`)).
+  pipe(gulp.dest(`build/img`));
 });
 
 gulp.task(`scripts`, () => {
@@ -107,6 +120,3 @@ gulp.task(`serve`, () => {
 gulp.task(`assemble`, gulp.series(`clean`, `copy`, `copy-html`, `style`, `sprite`, `imagemin`, `scripts`));
 
 gulp.task(`build`, gulp.series(`assemble`, `serve`));
-
-gulp.task(`test`, () => {
-});
