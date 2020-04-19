@@ -1,6 +1,5 @@
-import getElementFromHTMLString from './element.js';
-
-const greetingElement = getElementFromHTMLString(`<section class="greeting central--blur">
+export default `<div id="main" class="central__content">
+  <section class="greeting central--blur">
     <img class="greeting__logo" src="img/logo_ph-big.svg" width="201" height="89" alt="Pixel Hunter">
     <div class="greeting__asterisk asterisk"><span class="visually-hidden">Я просто красивая звёздочка</span>*</div>
     <div class="greeting__challenge">
@@ -22,6 +21,4 @@ const greetingElement = getElementFromHTMLString(`<section class="greeting centr
     <button class="greeting__top top" type="button">
       <img src="img/icon-top.svg" width="71" height="79" alt="Топ игроков">
     </button>
-  </section>`);
-
-export default greetingElement;
+  </section></div>`;

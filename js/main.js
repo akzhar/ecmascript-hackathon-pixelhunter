@@ -1,93 +1,89 @@
 import switchScreen from './screen.js';
+import data from './data/data.js';
 
-import introElement from './intro.js';
-import greetingElement from './greeting.js';
-import rulesElement from './rules.js';
-import game1Element from './game-1.js';
-import game2Element from './game-2.js';
-import game3Element from './game-3.js';
-import statsElement from './stats.js';
+import intro from './screens/intro.js';
+import greeting from './screens/greeting.js';
+import rules from './screens/rules.js';
+import game from './screens/game.js';
+import stats from './screens/stats/stats.js';
 
-start();
+const screens =
+[
+  {screen: intro},
+  {screen: greeting},
+  {screen: rules},
+  {screen: game.getScreen(data, 2), questions: 2},
+  {screen: game.getScreen(data, 1), questions: 1},
+  {screen: game.getScreen(data, 3), questions: 3},
+  {screen: stats}
+];
 
-// обнулить все экраны
+let current = 0;
 
-function start() {
-  const introAsterisk = document.querySelector(`.intro__asterisk`);
-  introAsterisk.addEventListener(`click`, onIntroAsteriskClick);
+restartGame();
+
+function restartGame() {
+  current = 0;
+  switchScreen(screens[current].screen);
+  onScreenChange();
 }
 
-function onIntroAsteriskClick() {
-  switchScreen(greetingElement);
-  const greetingArrow = document.querySelector(`.greeting__continue`);
-  greetingArrow.addEventListener(`click`, onGreetingArrowClick);
+function nextScreen() {
+  current++;
+  switchScreen(screens[current].screen);
+  onScreenChange();
 }
 
-function onGreetingArrowClick() {
-  switchScreen(rulesElement);
-  switchOnBackBtn();
-  const rulesInput = document.querySelector(`.rules__input`);
-  const rulesBtn = document.querySelector(`.rules__button`);
-  rulesInput.value = ``;
-  rulesBtn.disabled = true;
-  rulesInput.addEventListener(`input`, () => {
-    rulesBtn.disabled = (rulesInput.value === ``) ? true : false;
-  });
-  rulesBtn.addEventListener(`click`, onRulesBtnClick);
+function onScreenChange() {
+  const screen = screens[current].screen;
+  const questions = screens[current].questions;
+  if (screen === intro) {
+    const asterisk = document.querySelector(`.intro__asterisk`);
+    asterisk.addEventListener(`click`, nextScreen);
+  }
+  if (screen === greeting) {
+    const startArrow = document.querySelector(`.greeting__continue`);
+    startArrow.addEventListener(`click`, nextScreen);
+  }
+  if (screen !== intro && screen !== greeting) {
+    const backArrow = document.querySelector(`.back`);
+    backArrow.addEventListener(`click`, restartGame);
+  }
+  if (screen === rules) {
+    const nameInput = document.querySelector(`.rules__input`);
+    const submitBtn = document.querySelector(`.rules__button`);
+    nameInput.addEventListener(`input`, () => {
+      submitBtn.disabled = (nameInput.value === ``) ? true : false;
+    });
+    submitBtn.addEventListener(`click`, nextScreen);
+  }
+  if (questions) {
+    const selector = (questions === 3) ? `.game__option` : `.game__answer > input`;
+    const answers = document.querySelectorAll(selector);
+    answers.forEach((answer) => answer.addEventListener(`click`, onAnswer));
+  }
 }
 
-function onBackBtnClick() {
-  switchScreen(introElement);
-  start();
+function onAnswer() {
+  // запись ответов если это вопрос
+  if (screens[current].questions !== 3) {
+    // console.log(current - 2 + `: you think this is a ` + this.value);
+    if (isAllAnswersGiven()) {
+      nextScreen();
+    }
+  } else {
+    // console.log(current - 2 + `: you think this is a paint`);
+    nextScreen();
+  }
 }
 
-function switchOnBackBtn() {
-  const backBtn = document.querySelector(`.back`);
-  backBtn.addEventListener(`click`, onBackBtnClick);
-}
-
-function onRulesBtnClick() {
-  switchScreen(game1Element);
-  switchOnBackBtn();
-  const questionAnswers = document.querySelectorAll(`.game__answer`);
-  const question1Answers = Array.from(document.querySelectorAll(`input[name="question1"]`));
-  const question2Answers = Array.from(document.querySelectorAll(`input[name="question2"]`));
-  let canContinue = false;
-  questionAnswers.forEach((answer) => {
-    answer.addEventListener(`click`, () => {
-      canContinue = isAllAnswered(question1Answers, question2Answers);
-      if (canContinue) {
-        onGame1AnswersChecked();
-      }
+function isAllAnswersGiven() {
+  const options = Array.from(document.querySelectorAll(`.game__option`));
+  return options.every((option) => {
+    const answers = Array.from(option.querySelectorAll(`.game__answer`));
+    return answers.some((answer) => {
+      const input = answer.querySelector(`input`);
+      return input.checked;
     });
   });
 }
-
-function isAllAnswered(...answers) {
-  const checked = (arr) => arr.some((element) => element.checked);
-  return answers.every(checked);
-}
-
-function onGame1AnswersChecked() {
-  switchScreen(game2Element);
-  switchOnBackBtn();
-  const questionAnswers = document.querySelectorAll(`.game__answer`);
-  questionAnswers.forEach((answer) => {
-    answer.addEventListener(`click`, onGame2AnswersChecked);
-  });
-}
-
-function onGame2AnswersChecked() {
-  switchScreen(game3Element);
-  switchOnBackBtn();
-  const questionAnswers = document.querySelectorAll(`.game__option`);
-  questionAnswers.forEach((answer) => {
-    answer.addEventListener(`click`, onGame3AnswersChecked);
-  });
-}
-
-function onGame3AnswersChecked() {
-  switchScreen(statsElement);
-  switchOnBackBtn();
-}
-
