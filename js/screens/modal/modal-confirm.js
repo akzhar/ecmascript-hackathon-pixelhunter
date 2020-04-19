@@ -1,6 +1,4 @@
-import getElementFromHTMLString from './element.js';
-
-const modalConfirmElement = getElementFromHTMLString(`<section class="modal">
+export default `<section class="modal">
     <form class="modal__inner">
       <button class="modal__close" type="button">
         <span class="visually-hidden">Закрыть</span>
@@ -12,6 +10,4 @@ const modalConfirmElement = getElementFromHTMLString(`<section class="modal">
         <button class="modal__btn">Отмена</button>
       </div>
     </form>
-  </section>`);
-
-export default modalConfirmElement;
+  </section>`;

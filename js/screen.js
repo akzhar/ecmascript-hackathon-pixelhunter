@@ -1,8 +1,12 @@
-const main = document.querySelector(`#main`);
+import getElementFromHTMLString from './element.js';
+
+const main = document.querySelector(`main.central`);
 
 function switchScreen(screen) {
-  main.innerHTML = ``;
-  main.appendChild(screen);
+  const newScreen = getElementFromHTMLString(screen);
+  const oldScreen = document.querySelector(`#main`);
+  main.removeChild(oldScreen);
+  main.appendChild(newScreen);
 }
 
 export default switchScreen;
