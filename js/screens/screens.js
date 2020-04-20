@@ -1,19 +1,21 @@
-import data from '../data/data.js';
+// модуль собирает все экраны игры по порядку
 
-import intro from './intro.js';
-import greeting from './greeting.js';
-import rules from './rules.js';
-import getGame from './game.js';
-import stats from './stats/stats.js';
+import data from '../data/data.js';
+import {getGameHTMLString} from '../render.js';
+
+import introHTMLString from './intro.js';
+import greetingHTMLString from './greeting.js';
+import rulesHTMLString from './rules.js';
+import statsHTMLString from './stats/stats.js';
 
 const screens = [];
 
-screens.push({name: `intro`, screen: intro});
-screens.push({name: `greeting`, screen: greeting});
-screens.push({name: `rules`, screen: rules});
-data.games.forEach((game) => {
-  screens.push({name: `game`, screen: getGame(game), gameType: game.gameType});
+screens.push({name: `intro`, html: introHTMLString});
+screens.push({name: `greeting`, html: greetingHTMLString});
+screens.push({name: `rules`, html: rulesHTMLString});
+data.games.forEach((game, gameIndex) => {
+  screens.push({name: `game`, gameType: game.gameType, html: getGameHTMLString(game, gameIndex)});
 });
-screens.push({name: `stats`, screen: stats});
+screens.push({name: `stats`, html: statsHTMLString});
 
 export default screens;

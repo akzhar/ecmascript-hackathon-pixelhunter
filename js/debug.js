@@ -1,5 +1,5 @@
 const IS_DEV = true;
-const STYLE = `style="box-shadow: 0px 0px 16px 17px rgba(19,173,24,1);"`;
+const STYLE = `style="box-shadow: 0px 0px 10px 12px rgba(19,173,24,1);"`;
 
 function isPhoto(answer) {
   return (IS_DEV && answer === `photo`) ? STYLE : ``;
