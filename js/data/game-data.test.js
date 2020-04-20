@@ -1,5 +1,5 @@
 import {assert} from 'chai';
-import getScore from '../score.js';
+import {getTotalScore, getRightAnswersCount, getSpeedBonusCount, getSlowPenaltyCount} from '../score.js';
 
 // В блоке describe (набор тестов) указывается что будет тестировать этот блок тестов
 //   – Отвечает на вопрос «О чём эти тесты?»
@@ -8,43 +8,43 @@ import getScore from '../score.js';
 
 const notAllAnswers =
 [{
-  isRight: true,
+  isOK: true,
   time: 30
 },{
-  isRight: false,
+  isOK: false,
   time: 5
 }];
 
 const allAnswersNotFastNotSlow =
 [{
-  isRight: true,
+  isOK: true,
   time: 11
 },{
-  isRight: true,
+  isOK: true,
   time: 12
 },{
-  isRight: true,
+  isOK: true,
   time: 11
 },{
-  isRight: true,
+  isOK: true,
   time: 15
 },{
-  isRight: true,
+  isOK: true,
   time: 19
 },{
-  isRight: true,
+  isOK: true,
   time: 18
 },{
-  isRight: true,
+  isOK: true,
   time: 17
 },{
-  isRight: true,
+  isOK: true,
   time: 16
 },{
-  isRight: true,
+  isOK: true,
   time: 18
 },{
-  isRight: true,
+  isOK: true,
   time: 13
 }];
 
@@ -55,9 +55,9 @@ const allAnswersNotFastNotSlow =
 
 describe(`Scoring at the end of the game`, () => {
   it(`should return -1 when not all answers (< 10) are given`, () => {
-    assert.equal(-1, getScore(notAllAnswers, 2));
+    assert.equal(-1, getTotalScore(notAllAnswers, 2));
   });
   it(`should return 1150 when all answers are given (10) right, not fast but not slow (10 > time < 20) and all lives (4) are remain`, () => {
-    assert.equal(1150, getScore(allAnswersNotFastNotSlow, 3));
+    assert.equal(1150, getTotalScore(allAnswersNotFastNotSlow, 3));
   });
 });
