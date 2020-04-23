@@ -3,12 +3,20 @@
 // @param  {integer} lives кол-во оставшихся жизней
 // @return {integer} кол-во набранных очков
 function getTotalScore(answers, lives) {
-  if (answers.length < 10) return -1;
-  const score = answers.reduce((score, answer) => {
-    if (answer.isOK) score+= 100;
-    if (answer.time < 10) score+= 50;
-    if (answer.time > 20) score-= 50;
-    return score;
+  if (answers.length < 10) {
+    return -1;
+  }
+  const score = answers.reduce((acc, answer) => {
+    if (answer.isOK) {
+      acc += 100;
+    }
+    if (answer.time < 10) {
+      acc += 50;
+    }
+    if (answer.time > 20) {
+      acc -= 50;
+    }
+    return acc;
   }, 0);
   return score + lives * 50;
 }

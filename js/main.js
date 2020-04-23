@@ -1,7 +1,8 @@
 import {renderScreen, renderLives, renderStats, renderResults} from './render.js';
 import screens from './screens/screens.js';
-
 import data from './data/data.js';
+
+// разделить модуль
 
 let current = 0;
 
@@ -9,7 +10,7 @@ restartGame();
 
 function restartGame() {
   current = 0;
-  dropGameData();
+  resetGameData();
   changeScreen();
 }
 
@@ -24,11 +25,11 @@ function endGame() {
 }
 
 function changeScreen() {
-  renderScreen(screens[current].screen);
+  renderScreen(screens[current].html);
   onScreenChange();
 }
 
-function dropGameData() {
+function resetGameData() {
   data.user = ``;
   data.lives = 3;
   data.answers = [];
@@ -77,39 +78,53 @@ function onStartBtnClick() {
 }
 
 function onEachAnswer(evt) {
-  if (screens[current].gameType !== 3) {
-    if (isAllAnswersGiven()) {
-      const isRight = isAllAnswersGivenRight();
-      onValidAnswer(isRight);
-    }
-  } else {
-    const isRight = evt.currentTarget.dataset.answer === evt.currentTarget.dataset.value;
-    onValidAnswer(isRight);
+  if (screens[current].gameType === 3) {
+    const div = evt.currentTarget;
+    const gameIndex = div.dataset.gameindex;
+    const correctAnswer = getCorrectAnswer(gameIndex, 0);
+    const isCorrect = +div.dataset.value === correctAnswer;
+    onValidAnswer(isCorrect);
+  } else if (isAllAnswersGiven()) {
+    const isCorrect = isAllAnswersGivenCorrect();
+    onValidAnswer(isCorrect);
   }
 }
 
-function onValidAnswer(isRight) {
-  saveAnswer(isRight);
-  if (!isRight) {
+function onValidAnswer(isCorrect) {
+  saveAnswer(isCorrect);
+  if (!isCorrect) {
     data.lives--;
   }
   const nextAction = (data.lives >= 0) ? continueGame : endGame;
   nextAction();
 }
 
-function saveAnswer(isRight) {
-  data.answers.push({isOK: isRight, time: 15});
+function saveAnswer(isCorrect) {
+  data.answers.push({isOK: isCorrect, time: 15});
 }
 
-function isAllAnswersGivenRight() {
+function isAllAnswersGivenCorrect() {
   const options = Array.from(document.querySelectorAll(`.game__option`));
   return options.every((option) => {
     const answers = Array.from(option.querySelectorAll(`.game__answer`));
     return answers.some((answer) => {
       const input = answer.querySelector(`input`);
-      return input.checked && input.dataset.answer === input.value;
+      const gameIndex = input.dataset.gameindex;
+      const questionIndex = getQuestionIndex(input);
+      const correctAnswer = getCorrectAnswer(gameIndex, questionIndex);
+      return input.checked && input.value === correctAnswer;
     });
   });
+}
+
+function getQuestionIndex(input) {
+  // тест - всегда должно возвражать число 1, 2, 3 ...
+  return +input.name[input.name.length - 1] - 1;
+}
+
+function getCorrectAnswer(gameIndex, questionIndex) {
+  // тест - всегда должно возвражать корректный ответ ...
+  return data.games[gameIndex].questions[questionIndex].answer;
 }
 
 function isAllAnswersGiven() {
