@@ -1,7 +1,7 @@
 // модуль собирает все экраны игры по порядку
 
 import data from '../data/data.js';
-import {getGameHTMLString} from '../render.js';
+import {getGameHTMLString} from '../html.js';
 
 import introHTMLString from './intro.js';
 import greetingHTMLString from './greeting.js';

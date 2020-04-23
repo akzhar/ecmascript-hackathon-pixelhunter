@@ -2,6 +2,8 @@ import {renderScreen, renderLives, renderStats, renderResults} from './render.js
 import screens from './screens/screens.js';
 import data from './data/data.js';
 
+// разделить модуль
+
 let current = 0;
 
 restartGame();

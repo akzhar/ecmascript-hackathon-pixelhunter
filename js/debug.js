@@ -9,8 +9,8 @@ function isPaint(answer) {
   return (IS_DEV && answer === `paint`) ? STYLE : ``;
 }
 
-function isRight(isRight) {
-  return (IS_DEV && isRight) ? STYLE : ``;
+function isRight(isOK) {
+  return (IS_DEV && isOK) ? STYLE : ``;
 }
 
 export {isPhoto, isPaint, isRight};
