@@ -1,8 +1,14 @@
-import {renderScreen, renderLives, renderStats, renderResults} from './render.js';
-import screens from './screens/screens.js';
-import data from './data/data.js';
+import screens from './screens.js';
+import data from './data.js';
 
-// разделить модуль
+import AsteriskView from './view/asterisk-view.js';
+import StartArrowView from './view/start-arrow-view.js';
+import BackArrowView from './view/back-arrow-view.js';
+import StartButtonView from './view/start-button-view.js';
+import NameInputView from './view/name-input-view.js';
+import LivesBlockView from './view/lives-block-view.js';
+import StatsBlockView from './view/stats-block-view.js';
+import StatsSingleView from './view/stats-single-view.js';
 
 let current = 0;
 
@@ -25,7 +31,8 @@ function endGame() {
 }
 
 function changeScreen() {
-  renderScreen(screens[current].html);
+  const screen = screens[current].screen;
+  screen.render();
   onScreenChange();
 }
 
@@ -37,37 +44,42 @@ function resetGameData() {
 
 function onScreenChange() {
   const screenName = screens[current].name;
+  const screen = screens[current].screen;
 
   if (screenName === `intro`) {
-    const asterisk = document.querySelector(`.intro__asterisk`);
-    asterisk.addEventListener(`click`, continueGame);
+    const asterisk = new AsteriskView();
+    asterisk.render();
+    asterisk.bind(continueGame);
   }
   if (screenName === `greeting`) {
-    const startArrow = document.querySelector(`.greeting__continue`);
-    startArrow.addEventListener(`click`, continueGame);
+    const startArrow = new StartArrowView();
+    startArrow.render();
+    startArrow.bind(continueGame);
   }
   if (screenName !== `intro` && screenName !== `greeting`) {
-    const backArrow = document.querySelector(`.back`);
-    backArrow.addEventListener(`click`, restartGame);
+    const backArrow = new BackArrowView();
+    backArrow.render();
+    backArrow.bind(restartGame);
   }
   if (screenName === `rules`) {
-    const nameInput = document.querySelector(`.rules__input`);
-    const startBtn = document.querySelector(`.rules__button`);
-    nameInput.addEventListener(`input`, () => {
-      startBtn.disabled = (nameInput.value === ``) ? true : false;
-    });
-    startBtn.addEventListener(`click`, onStartBtnClick);
+    const nameInput = new NameInputView();
+    const startBtn = new StartButtonView();
+    nameInput.render();
+    startBtn.render();
+    startBtn.bind(onStartBtnClick);
+    nameInput.bind();
   }
   if (screenName === `game`) {
-    const gameType = screens[current].gameType;
-    renderLives(data.lives);
-    renderStats(data.answers);
-    const selector = (gameType === 3) ? `.game__option` : `.game__answer > input`;
-    const answersElem = document.querySelectorAll(selector);
-    answersElem.forEach((answer) => answer.addEventListener(`click`, onEachAnswer));
+    const livesBlock = new LivesBlockView(data.lives);
+    const statsBlock = new StatsBlockView(data.answers);
+    livesBlock.render();
+    statsBlock.render();
+    // создать отдельные view для кнопок ответов
+    screen.bind(onEachAnswer);
   }
   if (screenName === `stats`) {
-    renderResults(data.answers, data.lives);
+    const statsSingleBlock = new StatsSingleView(data.answers, data.lives);
+    statsSingleBlock.render();
   }
 }
 
