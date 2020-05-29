@@ -26,18 +26,14 @@ export default class AbstractView {
   // При последующих обращениях должен использоваться элемент, созданный при первом вызове геттера.
   get element() {
     const template = this.template;
-    if (!elements.hasOwnProperty(template)) {
+    // if (!elements.hasOwnProperty(template)) {
       const div = document.createElement(`div`);
       div.innerHTML = template;
       const elem = div.firstChild;
       elements[template] = elem;
       return elem;
-    } else {
-
-      // остаются все выбранные варианты
-      // debugger;
-
-      return elements[template];
-    }
+    // } else {
+      // return elements[template];
+    // }
   }
 }

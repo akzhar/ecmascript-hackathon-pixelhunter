@@ -1,16 +1,16 @@
-const IS_DEV = true;
-const STYLE = `style="box-shadow: 0px 0px 10px 12px rgba(19,173,24,1);"`;
+const IS_DEBUG_MODE_ON = true;
+const DEBUG_MODE_STYLE = `style="box-shadow: 0px 0px 10px 12px rgba(19,173,24,1);"`;
 
 function isPhoto(answer) {
-  return (IS_DEV && answer === `photo`) ? STYLE : ``;
+  return (IS_DEBUG_MODE_ON && answer === `photo`) ? DEBUG_MODE_STYLE : ``;
 }
 
 function isPaint(answer) {
-  return (IS_DEV && answer === `paint`) ? STYLE : ``;
+  return (IS_DEBUG_MODE_ON && answer === `paint`) ? DEBUG_MODE_STYLE : ``;
 }
 
-function isRight(isOK) {
-  return (IS_DEV && isOK) ? STYLE : ``;
+function isCorrect(isCorrect) {
+  return (IS_DEBUG_MODE_ON && isCorrect) ? DEBUG_MODE_STYLE : ``;
 }
 
-export {isPhoto, isPaint, isRight};
+export default {isPhoto, isPaint, isCorrect};

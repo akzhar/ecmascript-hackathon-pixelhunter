@@ -18,4 +18,4 @@ function resize(frame, given) {
   return {width, height};
 }
 
-export {resize};
+export default resize;

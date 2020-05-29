@@ -13,8 +13,8 @@ const screens = [];
 screens.push({name: `intro`, screen: new IntroScreenView()});
 screens.push({name: `greeting`, screen: new GreetingScreenView()});
 screens.push({name: `rules`, screen: new RulesScreenView()});
-data.games.forEach((game, gameIndex) => {
-  screens.push({name: `game`, gameType: game.gameType, screen: new GameScreenView(game, gameIndex)});
+data.games.forEach((game) => {
+  screens.push({name: `game`, screen: new GameScreenView(game)});
 });
 screens.push({name: `stats`, screen: new StatsScreenView()});
 
