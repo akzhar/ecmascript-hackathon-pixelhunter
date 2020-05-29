@@ -12,6 +12,7 @@ export default class StartButtonView extends AbstractView {
 
   render() {
     const parentElement = document.querySelector(`form.rules__form`);
+    this.element.disabled = true;
     parentElement.appendChild(this.element);
   }
 

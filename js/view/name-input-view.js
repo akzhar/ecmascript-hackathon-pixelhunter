@@ -12,6 +12,7 @@ export default class NameInputView extends AbstractView {
 
   render() {
     const parentElement = document.querySelector(`form.rules__form`);
+    this.element.value = ``;
     parentElement.appendChild(this.element);
   }
 
