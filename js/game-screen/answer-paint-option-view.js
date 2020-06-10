@@ -1,4 +1,4 @@
-import AbstractView from "./abstract-view.js";
+import AbstractView from "../abstract-view.js";
 import debug from '../debug.js';
 
 export default class AnswerPaintOptionView extends AbstractView {

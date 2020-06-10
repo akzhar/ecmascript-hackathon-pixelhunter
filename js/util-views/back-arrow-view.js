@@ -1,4 +1,4 @@
-import AbstractView from "./abstract-view.js";
+import AbstractView from "../abstract-view.js";
 
 export default class BackArrowView extends AbstractView {
 
