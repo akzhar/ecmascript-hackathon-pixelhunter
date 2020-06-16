@@ -1,6 +1,6 @@
 import AbstractView from "../abstract-view.js";
 
-export default class IntroScreenView extends AbstractView {
+export default class WelcomeScreenView extends AbstractView {
 
   constructor() {
     super();

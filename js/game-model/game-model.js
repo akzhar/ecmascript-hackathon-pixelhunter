@@ -1,17 +1,12 @@
-const GAMES_COUNT = 10;
-const LIVES_COUNT = 3;
-const GameType = {
-  one: 1,
-  two: 2,
-  three: 3
-};
+import config from '../config.js';
 
-class GameModel {
+export default class GameModel {
   constructor() {
     this._playerName = ``;
-    this._lives = LIVES_COUNT;
+    this._lives = config.LIVES_COUNT;
     this._answers = [];
     this._games = GameModel.getNewGames();
+    this._isGameOver = false;
   }
 
   set playerName(name) {
@@ -30,10 +25,14 @@ class GameModel {
     return this._games;
   }
 
+  get isGameOver() {
+    return this._isGameOver;
+  }
+
   reset() {
-    this._playerName = ``;
-    this._lives = LIVES_COUNT;
+    this._lives = config.LIVES_COUNT;
     this._answers = [];
+    this._isGameOver = false;
   }
 
   addAnswer(answer) {
@@ -41,22 +40,27 @@ class GameModel {
   }
 
   minusLive() {
-    this._lives--;
+    if (this._lives === 0) {
+      this._isGameOver = true;
+    }
+    if (this._lives) {
+      this._lives--;
+    }
   }
 
   static getNewGames() {
     const games = [];
 
-    for (let i = 0; i < GAMES_COUNT; i++) {
+    for (let i = 0; i < config.GAMES_COUNT; i++) {
       const gameType = GameModel.getRandomGameType();
       switch (gameType) {
-        case GameType.one:
+        case config.GAME_TYPE.one:
           games.push(GameModel.getGameType1(i));
           break;
-        case GameType.two:
+        case config.GAME_TYPE.two:
           games.push(GameModel.getGameType2(i));
           break;
-        case GameType.three:
+        case config.GAME_TYPE.three:
           games.push(GameModel.getGameType3(i));
           break;
       }
@@ -66,7 +70,7 @@ class GameModel {
   }
 
   static getRandomGameType() {
-    return Math.round(Math.random() * (GameType.three - GameType.one) + GameType.one);
+    return Math.round(Math.random() * (config.GAME_TYPE.three - config.GAME_TYPE.one) + config.GAME_TYPE.one);
   }
 
   static getGameType1(index) {
@@ -74,7 +78,7 @@ class GameModel {
     // в этом режиме пользователь должен определить картина это или фотография
     return {
       gameIndex: index,
-      gameType: GameType.one,
+      gameType: config.GAME_TYPE.one,
       frameSize: {width: 705, height: 455},
       task: `Угадай, фото или рисунок?`,
       questions:
@@ -98,7 +102,7 @@ class GameModel {
     // для каждого из изображений пользователь должен указать картина это или фотография
     return {
       gameIndex: index,
-      gameType: GameType.two,
+      gameType: config.GAME_TYPE.two,
       frameSize: {width: 468, height: 458},
       task: `Угадайте для каждого изображения фото или рисунок?`,
       questions:
@@ -132,7 +136,7 @@ class GameModel {
     // пользователю нужно выбрать одно — либо нужно выбрать единственную фотографию, либо единственную картину
     return {
       gameIndex: index,
-      gameType: GameType.three,
+      gameType: config.GAME_TYPE.three,
       frameSize: {width: 304, height: 455},
       task: `Найдите рисунок среди изображений`,
       questions: [
@@ -158,5 +162,3 @@ class GameModel {
     };
   }
 }
-
-export default new GameModel();

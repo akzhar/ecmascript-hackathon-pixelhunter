@@ -1,9 +1,9 @@
 import AbstractScreen from '../abstract-screen.js';
 
-import IntroScreenView from './intro-screen-view.js';
+import IntroScreenView from './welcome-screen-view.js';
 import AsteriskView from './asterisk-view.js';
 
-export default class IntroScreen extends AbstractScreen {
+export default class WelcomeScreen extends AbstractScreen {
 
   constructor() {
     super();

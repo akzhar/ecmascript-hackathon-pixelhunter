@@ -1,9 +1,12 @@
+import ConfirmModalView from './util-views/confirm-modal-view.js';
+
 export default class AbstractScreen {
 
   constructor() {
     this.gameModel = null;
     this.game = null;
     this.view = null;
+    this.timer = null;
     this.startScreen = null;
     this.nextScreen = null;
     this.endScreen = null;
@@ -20,7 +23,11 @@ export default class AbstractScreen {
 
   // метод перезапускает игру
   _restartGame() {
-    this.gameModel.reset();
-    this.startScreen.show();
+    const confirmModal = new ConfirmModalView();
+    confirmModal.render();
+    confirmModal.bind(() => {
+      this.gameModel.reset();
+      this.startScreen.show();
+    });
   }
 }

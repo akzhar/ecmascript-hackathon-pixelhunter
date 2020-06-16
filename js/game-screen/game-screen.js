@@ -1,6 +1,8 @@
+import config from '../config.js';
 import AbstractScreen from '../abstract-screen.js';
 
 import GameScreenView from './game-screen-view.js';
+import TimerBlockView from './timer-block-view.js';
 import LivesBlockView from './lives-block-view.js';
 import StatsBlockView from '../util-views/stats-block-view.js';
 import AnswerPhotoButtonView from './answer-photo-button-view.js';
@@ -8,12 +10,6 @@ import AnswerPaintButtonView from './answer-paint-button-view.js';
 import AnswerPaintOptionView from './answer-paint-option-view.js';
 import ImageView from './image-view.js';
 import BackArrowView from '../util-views/back-arrow-view.js';
-
-const GameType = {
-  one: 1,
-  two: 2,
-  three: 3
-};
 
 export default class GameScreen extends AbstractScreen {
 
@@ -29,21 +25,26 @@ export default class GameScreen extends AbstractScreen {
     const gameType = game.gameType;
     const livesBlock = new LivesBlockView(this.gameModel.lives);
     const statsBlock = new StatsBlockView(this.gameModel.answers);
+
     livesBlock.render();
     statsBlock.render();
 
-    const onAnswer = this._onAnswer.bind(this);
+    this.timer = new TimerBlockView();
+    this.timer.render();
+    this._timerOn();
 
-    if (gameType === GameType.one) {
+    const onEveryAnswer = this._onEveryAnswer.bind(this);
+
+    if (gameType === config.GAME_TYPE.one) {
       const answer1PhotoButton = new AnswerPhotoButtonView(0, game);
       const answer1PaintButton = new AnswerPaintButtonView(0, game);
       const image = new ImageView(0, game);
       answer1PhotoButton.render();
       answer1PaintButton.render();
       image.render();
-      answer1PhotoButton.bind(onAnswer);
-      answer1PaintButton.bind(onAnswer);
-    } else if (gameType === GameType.two) {
+      answer1PhotoButton.bind(onEveryAnswer);
+      answer1PaintButton.bind(onEveryAnswer);
+    } else if (gameType === config.GAME_TYPE.two) {
       const answer1PhotoButton = new AnswerPhotoButtonView(0, game);
       const answer1PaintButton = new AnswerPaintButtonView(0, game);
       const image1 = new ImageView(0, game);
@@ -53,14 +54,14 @@ export default class GameScreen extends AbstractScreen {
       answer1PhotoButton.render();
       answer1PaintButton.render();
       image1.render();
-      answer1PhotoButton.bind(onAnswer);
-      answer1PaintButton.bind(onAnswer);
+      answer1PhotoButton.bind(onEveryAnswer);
+      answer1PaintButton.bind(onEveryAnswer);
       answer2PhotoButton.render();
       answer2PaintButton.render();
       image2.render();
-      answer2PhotoButton.bind(onAnswer);
-      answer2PaintButton.bind(onAnswer);
-    } else if (gameType === GameType.three) {
+      answer2PhotoButton.bind(onEveryAnswer);
+      answer2PaintButton.bind(onEveryAnswer);
+    } else if (gameType === config.GAME_TYPE.three) {
       const answer1PaintOptionView = new AnswerPaintOptionView(0, game);
       const image1 = new ImageView(0, game);
       const answer2PaintOptionView = new AnswerPaintOptionView(1, game);
@@ -73,9 +74,9 @@ export default class GameScreen extends AbstractScreen {
       image2.render();
       answer3PaintOptionView.render();
       image3.render();
-      answer1PaintOptionView.bind(onAnswer);
-      answer2PaintOptionView.bind(onAnswer);
-      answer3PaintOptionView.bind(onAnswer);
+      answer1PaintOptionView.bind(onEveryAnswer);
+      answer2PaintOptionView.bind(onEveryAnswer);
+      answer3PaintOptionView.bind(onEveryAnswer);
     }
 
     const restartGame = this._restartGame.bind(this);
@@ -85,9 +86,21 @@ export default class GameScreen extends AbstractScreen {
     backArrow.bind(restartGame);
   }
 
-  _onAnswer(evt) {
+  _timerOn() {
+    if (this.timer.isActive && this.timer.time > 0) {
+      setTimeout(() => {
+        this.timer.update();
+        this._timerOn();
+      }, 1000);
+    }
+    if (this.timer.time === 0) {
+      this._onValidAnswer(false);
+    }
+  }
+
+  _onEveryAnswer(evt) {
     const game = this.game;
-    if (game.gameType === GameType.three) {
+    if (game.gameType === config.GAME_TYPE.three) {
       const input = evt.currentTarget;
       const gameIndex = GameScreen.getGameIndex(input);
       const questionIndex = 0;
@@ -133,10 +146,10 @@ export default class GameScreen extends AbstractScreen {
     if (!isOK) {
       this.gameModel.minusLive();
     }
-    if (this.gameModel.lives >= 0) {
-      this.nextScreen.show();
-    } else {
+    if (this.gameModel.isGameOver) {
       this.endScreen.show();
+    } else {
+      this.nextScreen.show();
     }
   }
 
@@ -145,7 +158,9 @@ export default class GameScreen extends AbstractScreen {
   }
 
   _saveAnswer(isOK) {
-    this.gameModel.addAnswer({isOK: isOK, time: 15});
+    const time = (config.TIME_TO_ANSWER - this.timer.time) / 1000;
+    this.timer.stop();
+    this.gameModel.addAnswer({isOK, time});
   }
 
   static getGameIndex(input) {
@@ -155,4 +170,5 @@ export default class GameScreen extends AbstractScreen {
   static getQuestionIndex(input) {
     return input.dataset.questionindex;
   }
+
 }

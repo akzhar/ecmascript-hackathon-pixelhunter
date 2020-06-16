@@ -11,7 +11,7 @@ export default class GameScreenView extends AbstractView {
     return `<div id="main" class="central__content">
               <header class="header">
                 <!-- PLACE TO BACK ARROW -->
-                <div class="game__timer">3:00</div>
+                <div class="game__timer"></div>
                 <div class="game__lives"></div>
               </header>
               <section class="game">
