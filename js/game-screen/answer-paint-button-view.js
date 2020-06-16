@@ -1,7 +1,7 @@
-import AbstractView from "./abstract-view.js";
+import AbstractView from "../abstract-view.js";
 import debug from '../debug.js';
 
-export default class AnswerPhotoButtonView extends AbstractView {
+export default class AnswerPaintButtonView extends AbstractView {
 
   constructor(questionIndex, game) {
     super();
@@ -11,9 +11,9 @@ export default class AnswerPhotoButtonView extends AbstractView {
   }
 
   get template() {
-    return `<label class="game__answer game__answer--photo">
-              <input class="visually-hidden" name="question${this.questionIndex}" type="radio" value="photo" data-gameindex="${this.gameIndex}" data-questionindex="${this.questionIndex}">
-              <span ${debug.isPhoto(this.correctAnswer)}>Фото</span>
+    return `<label class="game__answer game__answer--paint">
+              <input class="visually-hidden" name="question ${this.questionIndex}" type="radio" value="paint" data-gameindex="${this.gameIndex}" data-questionindex="${this.questionIndex}">
+              <span ${debug.isPaint(this.correctAnswer)}>Рисунок</span>
             </label>`;
   }
 
@@ -24,7 +24,7 @@ export default class AnswerPhotoButtonView extends AbstractView {
 
   bind(cb) {
     const parentElement = document.querySelectorAll('div.game__option')[this.questionIndex];
-    const answerElement = parentElement.querySelector(`.game__answer--photo > input`);
+    const answerElement = parentElement.querySelector(`.game__answer--paint > input`);
     answerElement.checked = false;
     answerElement.addEventListener(`click`, cb);
   }

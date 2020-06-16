@@ -1,5 +1,5 @@
-import AbstractView from "./abstract-view.js";
-import StatsBlockView from './stats-block-view.js';
+import AbstractView from "../abstract-view.js";
+import StatsBlockView from '../util-views/stats-block-view.js';
 import {getTotalScore, getRightAnswersCount, getSpeedBonusCount, getSlowPenaltyCount} from '../score.js';
 
 export default class StatsSingleView extends AbstractView {

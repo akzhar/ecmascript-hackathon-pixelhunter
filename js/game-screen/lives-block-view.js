@@ -1,4 +1,5 @@
-import AbstractView from "./abstract-view.js";
+import config from '../config.js';
+import AbstractView from "../abstract-view.js";
 
 export default class LivesBlockView extends AbstractView {
 
@@ -9,7 +10,7 @@ export default class LivesBlockView extends AbstractView {
 
   get template() {
     let result = ``;
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < config.LIVES_COUNT; i++) {
       result += `<img src="img/heart__${(this.lives > 0) ? `full` : `empty`}.svg" class="game__heart" alt="Life" width="31" height="27">`;
       this.lives--;
     }

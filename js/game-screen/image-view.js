@@ -1,4 +1,4 @@
-import AbstractView from "./abstract-view.js";
+import AbstractView from "../abstract-view.js";
 import resize from "../resize.js";
 
 export default class ImageView extends AbstractView {
