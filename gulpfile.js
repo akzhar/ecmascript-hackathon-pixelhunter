@@ -21,7 +21,7 @@ gulp.task(`test`, function () {
       plugins: [
         commonjs() // Сообщает Rollup, что модули можно загружать из node_modules
       ]}, `cjs`)) // Выходной формат тестов — `CommonJS` модуль
-  .pipe(gulp.dest(`build/test`))
+  .pipe(gulp.dest(`docs/test`))
   .pipe(mocha({
     reporter: `spec` // Вид в котором я хочу отображать результаты тестирования
   }));
@@ -42,11 +42,11 @@ gulp.task(`style`, () => {
       ]
     })
   ])).
-  pipe(gulp.dest(`build/css`)).
+  pipe(gulp.dest(`docs/css`)).
   pipe(server.stream()).
   pipe(minify()).
   pipe(rename(`style.min.css`)).
-  pipe(gulp.dest(`build/css`));
+  pipe(gulp.dest(`docs/css`));
 });
 
 gulp.task(`sprite`, () => {
@@ -55,7 +55,7 @@ gulp.task(`sprite`, () => {
     inlineSvg: true
   })).
   pipe(rename(`sprite.svg`)).
-  pipe(gulp.dest(`build/img`));
+  pipe(gulp.dest(`docs/img`));
 });
 
 gulp.task(`scripts`, () => {
@@ -64,21 +64,21 @@ gulp.task(`scripts`, () => {
     pipe(sourcemaps.init()).
     pipe(rollup({}, `iife`)).
     pipe(sourcemaps.write(``)).
-    pipe(gulp.dest(`build/js/`));
+    pipe(gulp.dest(`docs/js/`));
 });
 
 gulp.task(`imagemin`, () => {
-  return gulp.src(`build/img/**/*.{jpg,png,gif}`).
+  return gulp.src(`docs/img/**/*.{jpg,png,gif}`).
     pipe(imagemin([
       imagemin.optipng({optimizationLevel: 3}),
       imagemin.jpegtran({progressive: true})
     ])).
-    pipe(gulp.dest(`build/img`));
+    pipe(gulp.dest(`docs/img`));
 });
 
 gulp.task(`copy-html`, () => {
   return gulp.src(`*.{html,ico}`).
-    pipe(gulp.dest(`build`)).
+    pipe(gulp.dest(`docs`)).
     pipe(server.stream());
 });
 
@@ -87,11 +87,11 @@ gulp.task(`copy`, () => {
     `fonts/**/*.{woff,woff2}`,
     `img/*.*`
   ], {base: `.`}).
-    pipe(gulp.dest(`build`));
+    pipe(gulp.dest(`docs`));
 });
 
 gulp.task(`clean`, () => {
-  return del(`build`);
+  return del(`docs`);
 });
 
 gulp.task(`reload`, (done) => {
@@ -101,7 +101,7 @@ gulp.task(`reload`, (done) => {
 
 gulp.task(`serve`, () => {
   server.init({
-    server: `./build`,
+    server: `./docs`,
     notify: false,
     open: true,
     port: 3502,
