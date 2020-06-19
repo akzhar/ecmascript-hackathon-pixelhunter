@@ -16,7 +16,7 @@ const commonjs = require(`rollup-plugin-commonjs`);
 
 gulp.task(`test`, function () {
   return gulp
-  .src([`js/**/*.test.js`])
+  .src([`src/js/**/*.test.js`])
     .pipe(rollup({
       plugins: [
         commonjs() // Сообщает Rollup, что модули можно загружать из node_modules
@@ -28,7 +28,7 @@ gulp.task(`test`, function () {
 });
 
 gulp.task(`style`, () => {
-  return gulp.src(`sass/style.scss`).
+  return gulp.src(`src/sass/style.scss`).
   pipe(plumber()).
   pipe(sass()).
   pipe(postcss([
@@ -50,7 +50,7 @@ gulp.task(`style`, () => {
 });
 
 gulp.task(`sprite`, () => {
-  return gulp.src(`img/sprite/*.svg`).
+  return gulp.src(`src/img/sprite/*.svg`).
   pipe(svgstore({
     inlineSvg: true
   })).
@@ -59,7 +59,7 @@ gulp.task(`sprite`, () => {
 });
 
 gulp.task(`scripts`, () => {
-  return gulp.src(`js/**/*.js`).
+  return gulp.src(`src/js/**/*.js`).
     pipe(plumber()).
     pipe(sourcemaps.init()).
     pipe(rollup({}, `iife`)).
@@ -77,16 +77,16 @@ gulp.task(`imagemin`, () => {
 });
 
 gulp.task(`copy-html`, () => {
-  return gulp.src(`*.{html,ico}`).
+  return gulp.src(`src/*.{html,ico}`).
     pipe(gulp.dest(`docs`)).
     pipe(server.stream());
 });
 
 gulp.task(`copy`, () => {
   return gulp.src([
-    `fonts/**/*.{woff,woff2}`,
-    `img/*.*`
-  ], {base: `.`}).
+    `src/fonts/**/*.{woff,woff2}`,
+    `src/img/*.*`
+  ], {base: `src`}).
     pipe(gulp.dest(`docs`));
 });
 
@@ -108,13 +108,13 @@ gulp.task(`serve`, () => {
     ui: false
   });
 
-  gulp.watch(`sass/**/*.{scss,sass}`, gulp.series(`style`, `reload`));
-  gulp.watch(`*.html`).on(`change`, (e) => {
+  gulp.watch(`src/sass/**/*.{scss,sass}`, gulp.series(`style`, `reload`));
+  gulp.watch(`src/*.html`).on(`change`, (e) => {
     if (e.type !== `deleted`) {
       gulp.series(`copy-html`);
     }
   });
-  gulp.watch(`js/**/*.js`, gulp.series(`scripts`, `reload`));
+  gulp.watch(`src/js/**/*.js`, gulp.series(`scripts`, `reload`));
 });
 
 gulp.task(`assemble`, gulp.series(`clean`, `copy`, `copy-html`, `style`, `sprite`, `imagemin`, `scripts`));
