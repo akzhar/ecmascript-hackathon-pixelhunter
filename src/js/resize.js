@@ -1,6 +1,6 @@
 // Managing size
 // @param  {object} frame описывает размеры рамки, в которые должно быть вписано изображение
-// @param  {object} given описывает размеры изображения, которые нужно подогнать под рамку
+// @param  {object} given описывает ширину и высоту изображения, которое нужно подогнать под рамку
 // @return {object} новый объект, который будет содержать изменённые размеры изображения
 export default  function resize(frame, given) {
   let width = given.width;

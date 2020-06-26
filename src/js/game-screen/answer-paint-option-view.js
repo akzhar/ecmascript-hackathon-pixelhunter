@@ -1,17 +1,19 @@
 import AbstractView from "../abstract-view.js";
 import debug from '../debug.js';
+import GameModel from '../game-model/game-model.js';
 
 export default class AnswerPaintOptionView extends AbstractView {
 
   constructor(answerIndex, game) {
     super();
-    this.answerIndex = answerIndex;
     this.game = game;
-    this.correctAnswer = game.questions[0].correctAnswer;
+    this.answerIndex = answerIndex;
+    this.answerType = game.answers[answerIndex].type;
   }
 
   get template() {
-    return `<div class="game__option" data-answer="${this.answerIndex}" data-gameindex="${this.game.gameIndex}" ${debug.isCorrect(this.correctAnswer === this.answerIndex)}>
+    const correctAnswer = GameModel.getCorrectAnswer(this.game);
+    return `<div class="game__option" data-answer="${this.answerType}" data-answerindex="${this.answerIndex}" ${debug.isCorrect(this.answerType === correctAnswer)}>
               <!-- PLACE FOR IMAGE -->
             </div>`;
   }
