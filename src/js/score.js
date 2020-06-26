@@ -1,9 +1,11 @@
+import config from './config.js';
+
 // Scoring at the end of the game
 // @param  {array} answers массив ответов пользователя
 // @param  {integer} lives кол-во оставшихся жизней
 // @return {integer} кол-во набранных очков
 function getTotalScore(answers, lives) {
-  if (answers.length < 10) {
+  if (answers.length < config.GAMES_COUNT) {
     return -1;
   }
   const score = answers.reduce((acc, answer) => {

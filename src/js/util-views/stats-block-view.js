@@ -1,3 +1,4 @@
+import config from '../config.js';
 import AbstractView from "../abstract-view.js";
 
 export default class StatsBlockView extends AbstractView {
@@ -9,7 +10,7 @@ export default class StatsBlockView extends AbstractView {
 
   get template() {
     let result = ``;
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < config.GAMES_COUNT; i++) {
       const answer = this.answers[i];
       let modifier = ``;
       if (answer) {
