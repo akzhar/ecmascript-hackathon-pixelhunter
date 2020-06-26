@@ -166,6 +166,3 @@ export default class GameScreen extends AbstractScreen {
   }
 
 }
-
-
-// при рестарте удалять ранее созданный таймер

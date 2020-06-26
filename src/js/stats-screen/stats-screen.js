@@ -1,3 +1,4 @@
+import {postData} from '../backend.js';
 import AbstractScreen from '../abstract-screen.js';
 
 import StatsScreenView from './stats-screen-view.js';
@@ -21,5 +22,10 @@ export default class StatsScreen extends AbstractScreen {
     backArrow.render();
 
     backArrow.bind(restartGame);
+
+    postData({answers: this.gameModel.answers, lives: this.gameModel.lives})
+    .catch(() => {
+      throw new Error(`Error during POST games data...`);
+    });
   }
 }

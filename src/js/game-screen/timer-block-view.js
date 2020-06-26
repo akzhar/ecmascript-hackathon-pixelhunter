@@ -38,7 +38,7 @@ export default class TimerBlockView extends AbstractView {
       const timerElement = document.querySelector(`div.game__timer`);
       timerElement.textContent = time;
       if (this.time === 5000 || this.time === 3000 || this.time === 1000) {
-        timerElement.style = `color: #d74040;`;
+        timerElement.style = `color: ${config.COLOR_RED};`;
       } else {
         timerElement.style = `color: black;`;
       }

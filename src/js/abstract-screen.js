@@ -28,6 +28,9 @@ export default class AbstractScreen {
     confirmModal.bind(() => {
       this.gameModel.reset();
       this.startScreen.show();
+      if (this.timer) {
+        this.timer.stop();
+      }
     });
   }
 }
