@@ -6,7 +6,7 @@ function isPhoto(answer) {
 }
 
 function isPaint(answer) {
-  return (DEBUG_ON && answer === `paint`) ? STYLE : ``;
+  return (DEBUG_ON && answer === `painting`) ? STYLE : ``;
 }
 
 function isCorrect(isCorrect) {

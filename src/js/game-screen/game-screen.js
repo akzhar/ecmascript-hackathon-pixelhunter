@@ -1,5 +1,6 @@
 import config from '../config.js';
 import AbstractScreen from '../abstract-screen.js';
+import GameModel from '../game-model/game-model.js';
 
 import GameScreenView from './game-screen-view.js';
 import TimerBlockView from './timer-block-view.js';
@@ -13,16 +14,16 @@ import BackArrowView from '../util-views/back-arrow-view.js';
 
 export default class GameScreen extends AbstractScreen {
 
-  constructor(gameModel, game) {
+  constructor(gameModel, game, index) {
     super();
     this.gameModel = gameModel;
     this.game = game;
+    this.gameIndex = index;
     this.view = new GameScreenView(game);
   }
 
   _onScreenShow() {
     const game = this.game;
-    const gameType = game.gameType;
     const livesBlock = new LivesBlockView(this.gameModel.lives);
     const statsBlock = new StatsBlockView(this.gameModel.answers);
 
@@ -34,8 +35,7 @@ export default class GameScreen extends AbstractScreen {
     this._timerOn();
 
     const onEveryAnswer = this._onEveryAnswer.bind(this);
-
-    if (gameType === config.GAME_TYPE.one) {
+    if (game.type === config.QuestionType.TINDER_LIKE) {
       const answer1PhotoButton = new AnswerPhotoButtonView(0, game);
       const answer1PaintButton = new AnswerPaintButtonView(0, game);
       const image = new ImageView(0, game);
@@ -44,7 +44,7 @@ export default class GameScreen extends AbstractScreen {
       image.render();
       answer1PhotoButton.bind(onEveryAnswer);
       answer1PaintButton.bind(onEveryAnswer);
-    } else if (gameType === config.GAME_TYPE.two) {
+    } else if (game.type === config.QuestionType.TWO_OF_TWO) {
       const answer1PhotoButton = new AnswerPhotoButtonView(0, game);
       const answer1PaintButton = new AnswerPaintButtonView(0, game);
       const image1 = new ImageView(0, game);
@@ -61,7 +61,7 @@ export default class GameScreen extends AbstractScreen {
       image2.render();
       answer2PhotoButton.bind(onEveryAnswer);
       answer2PaintButton.bind(onEveryAnswer);
-    } else if (gameType === config.GAME_TYPE.three) {
+    } else if (game.type === config.QuestionType.ONE_OF_THREE) {
       const answer1PaintOptionView = new AnswerPaintOptionView(0, game);
       const image1 = new ImageView(0, game);
       const answer2PaintOptionView = new AnswerPaintOptionView(1, game);
@@ -99,13 +99,12 @@ export default class GameScreen extends AbstractScreen {
   }
 
   _onEveryAnswer(evt) {
-    const game = this.game;
-    if (game.gameType === config.GAME_TYPE.three) {
+    if (this.game.type === config.QuestionType.ONE_OF_THREE) {
       const input = evt.currentTarget;
-      const gameIndex = GameScreen.getGameIndex(input);
-      const questionIndex = 0;
-      const correctAnswer = this._getCorrectAnswer(gameIndex, questionIndex);
-      const isOK = +input.dataset.answer === correctAnswer;
+      const answerIndex = GameScreen.getAnswerIndex(input);
+      const actualAnswer = this._getAnswerType(this.gameIndex, answerIndex);
+      const correctAnswer = GameModel.getCorrectAnswer(this.game);
+      const isOK = actualAnswer === correctAnswer;
       this._onValidAnswer(isOK);
     } else {
       const isAll = this._isAllAnswersGiven();
@@ -133,10 +132,9 @@ export default class GameScreen extends AbstractScreen {
       const answers = Array.from(option.querySelectorAll(`.game__answer`));
       return answers.some((answer) => {
         const input = answer.querySelector(`input`);
-        const gameIndex = GameScreen.getGameIndex(input);
-        const questionIndex = GameScreen.getQuestionIndex(input);
-        const correctAnswer = this._getCorrectAnswer(gameIndex, questionIndex);
-        return input.checked && input.value === correctAnswer;
+        const answerIndex = GameScreen.getAnswerIndex(input);
+        const actualAnswer = this._getAnswerType(this.gameIndex, answerIndex);
+        return input.checked && input.value === actualAnswer;
       });
     });
   }
@@ -153,8 +151,8 @@ export default class GameScreen extends AbstractScreen {
     }
   }
 
-  _getCorrectAnswer(gameIndex, questionIndex) {
-    return this.gameModel.games[gameIndex].questions[questionIndex].correctAnswer;
+  _getAnswerType(gameIndex, answerIndex) {
+    return this.gameModel.games[gameIndex].answers[answerIndex].type;
   }
 
   _saveAnswer(isOK) {
@@ -163,12 +161,11 @@ export default class GameScreen extends AbstractScreen {
     this.gameModel.addAnswer({isOK, time});
   }
 
-  static getGameIndex(input) {
-    return input.dataset.gameindex;
-  }
-
-  static getQuestionIndex(input) {
-    return input.dataset.questionindex;
+  static getAnswerIndex(input) {
+    return input.dataset.answerindex;
   }
 
 }
+
+
+// при рестарте удалять ранее созданный таймер
