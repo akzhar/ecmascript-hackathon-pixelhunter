@@ -11,7 +11,7 @@ export default class AsteriskView extends AbstractView {
   }
 
   render() {
-    const parentElement = document.querySelector('#intro');
+    const parentElement = document.querySelector(`#intro`);
     parentElement.insertBefore(this.element, parentElement.firstChild);
   }
 

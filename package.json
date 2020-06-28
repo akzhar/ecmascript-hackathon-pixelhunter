@@ -1,17 +1,19 @@
 {
-  "name": "Pixel Hunter",
+  "name": "PixelHunter",
   "version": "5.0.0",
   "private": true,
   "description": "Личный проект «PixelHunter» от HTML Academy",
   "scripts": {
-    "eslint": "eslint ./gulpfile.js js/",
+    "eslint": "eslint ./gulpfile.js src/js/**/*.js",
     "stylelint": "stylelint 'sass/**/*.scss' --syntax scss",
-    "build": "gulp build",
-    "start": "gulp serve",
-    "test": "npm run eslint && npm run stylelint && gulp test"
+    "test": "npm run eslint && npm run stylelint && gulp test",
+    "build": "gulp build"
   },
   "devDependencies": {
+    "@babel/core": "^7.10.3",
+    "@babel/preset-env": "^7.10.3",
     "autoprefixer": "8.5.1",
+    "babel-polyfill": "^6.26.0",
     "browser-sync": "2.24.4",
     "chai": "4.2.0",
     "del": "3.0.0",
@@ -27,8 +29,11 @@
     "gulp-rename": "1.2.3",
     "gulp-sass": "4.0.1",
     "gulp-svgstore": "6.1.1",
+    "gulp-uglify": "^3.0.2",
     "rollup": "^2.0.6",
+    "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-commonjs": "10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
     "stylelint": "8.4.x",
     "stylelint-config-htmlacademy": "0.1.x"
   },

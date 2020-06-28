@@ -12,7 +12,10 @@ const svgstore = require(`gulp-svgstore`);
 const rollup = require(`gulp-better-rollup`);
 const sourcemaps = require(`gulp-sourcemaps`);
 const mocha = require(`gulp-mocha`);
+const uglify = require(`gulp-uglify`);
+const resolve = require(`rollup-plugin-node-resolve`);
 const commonjs = require(`rollup-plugin-commonjs`);
+const babel = require(`rollup-plugin-babel`);
 
 gulp.task(`test`, function () {
   return gulp
@@ -59,11 +62,25 @@ gulp.task(`sprite`, () => {
 });
 
 gulp.task(`scripts`, () => {
-  return gulp.src(`src/js/**/*.js`).
+  return gulp.src(`src/js/main.js`).
     pipe(plumber()).
     pipe(sourcemaps.init()).
-    pipe(rollup({}, `iife`)).
+    pipe(rollup({
+      cache: false,
+      plugins: [
+        resolve({browser: true}),
+        commonjs(),
+        babel({
+          babelrc: false,
+          exclude: `node_modules/**`,
+          presets: [`@babel/env`]
+        })
+      ]
+    }, `iife`)).
     pipe(sourcemaps.write(``)).
+    pipe(gulp.dest(`docs/js/`)).
+    pipe(uglify()).
+    pipe(rename(`main.min.js`)).
     pipe(gulp.dest(`docs/js/`));
 });
 
