@@ -19,7 +19,7 @@ export default class AnswerPaintOptionView extends AbstractView {
   }
 
   render() {
-    const parentElement = document.querySelector('form.game__content--triple');
+    const parentElement = document.querySelector(`form.game__content--triple`);
     parentElement.appendChild(this.element);
   }
 

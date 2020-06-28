@@ -19,7 +19,7 @@ export default class ImageView extends AbstractView {
   }
 
   render() {
-    const parentElement = document.querySelectorAll('div.game__option')[this.questionNumber];
+    const parentElement = document.querySelectorAll(`div.game__option`)[this.questionNumber];
     parentElement.appendChild(this.element);
   }
 }

@@ -52,8 +52,14 @@ export default class GameModel {
     const question = game.question;
     const isPainting = /\sрисунок\s/.test(question);
     const isPhoto = /\sфото\s/.test(question);
-    if (isPainting) return `painting`;
-    if (isPhoto) return `photo`
+    const result = ``;
+    if (isPainting) {
+      result = `painting`;
+    }
+    if (isPhoto) {
+      result = `photo`;
+    }
+    return result;
   }
 
 }

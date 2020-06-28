@@ -18,12 +18,12 @@ export default class AnswerPhotoButtonView extends AbstractView {
   }
 
   render() {
-    const parentElement = document.querySelectorAll('div.game__option')[this.answerIndex];
+    const parentElement = document.querySelectorAll(`div.game__option`)[this.answerIndex];
     parentElement.appendChild(this.element);
   }
 
   bind(cb) {
-    const parentElement = document.querySelectorAll('div.game__option')[this.answerIndex];
+    const parentElement = document.querySelectorAll(`div.game__option`)[this.answerIndex];
     const answerElement = parentElement.querySelector(`.game__answer--photo > input`);
     answerElement.checked = false;
     answerElement.addEventListener(`click`, cb);

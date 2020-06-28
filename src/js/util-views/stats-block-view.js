@@ -31,7 +31,7 @@ export default class StatsBlockView extends AbstractView {
       result += `<li class="stats__result stats__result--${modifier}"></li>`;
     }
     return `<ul class="stats">${result}</ul>`;
-}
+  }
 
   render() {
     const parentElement = document.querySelector(`section.game`);
