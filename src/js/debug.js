@@ -1,4 +1,4 @@
-const DEBUG_ON = true;
+const DEBUG_ON = false;
 const STYLE = `style="box-shadow: 0px 0px 10px 12px rgba(19,173,24,1);"`;
 
 function isPhoto(answer) {

@@ -3,7 +3,7 @@ const config = {
   POST_DATA_URL: `https://echo.htmlacademy.ru/`,
   GAMES_COUNT: 10,
   LIVES_COUNT: 3,
-  TIME_TO_ANSWER: 30000, // 10 sec
+  TIME_TO_ANSWER: 30000, // 30 sec
   COLOR_RED: `#d74040`,
   AnswerType: {
     PAINTING: `painting`,
